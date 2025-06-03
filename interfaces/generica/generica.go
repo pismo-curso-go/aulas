@@ -1,24 +1,24 @@
-package main
+// package main
 
-import "fmt"
+// import "fmt"
 
-func generica(interf interface{}) {
-	fmt.Println(interf)
-}
+// func generica(interf interface{}) {
+// 	fmt.Println(interf)
+// }
 
-func main() {
-	generica("String")
-	generica(1)
-	generica(true)
+// func main() {
+// 	generica("String")
+// 	generica(1)
+// 	generica(true)
 
-	fmt.Println(1, 2, "string", false, true, float64(12345))
+// 	fmt.Println(1, 2, "string", false, true, float64(12345))
 
-	mapa := map[interface{}]interface{}{
-		1:            "String",
-		float32(100): true,
-		"String":     "String",
-		true:         float64(12),
-	}
+// 	mapa := map[interface{}]interface{}{
+// 		1:            "String",
+// 		float32(100): true,
+// 		"String":     "String",
+// 		true:         float64(12),
+// 	}
 
-	fmt.Println(mapa)
-}
+// 	fmt.Println(mapa)
+// }
