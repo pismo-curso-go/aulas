@@ -42,6 +42,10 @@ func handleTasks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// http://localhost/tasks/3123/users - ROTA
+// http://localhost/tasks/3123?nome=matheus&page=3&offset=20&ordem=ASC - BUSCA
+// body { "nome": "matheus" } - CORPO
+
 func handleSpecificTasks(w http.ResponseWriter, r *http.Request) {
 	idStr := strings.TrimPrefix(r.URL.Path, "/tasks/")
 

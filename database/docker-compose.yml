@@ -17,7 +17,8 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init-scripts/mysql:/docker-entrypoint-initdb.d
+      # Caso não queira o seeder, comentar a proxima linha
+      - ./init-scripts/mysql:/docker-entrypoint-initdb.d 
     command: --default-authentication-plugin=mysql_native_password --innodb-use-native-aio=0 --sql_mode="" --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
@@ -38,6 +39,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      # Caso não queira o seeder, comentar a proxima linha
       - ./init-scripts/postgres:/docker-entrypoint-initdb.d
     shm_size: 256mb
     healthcheck:
