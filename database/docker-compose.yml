@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:5.7
+    container_name: aula_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: senha123
+      MYSQL_DATABASE: aula_go
+      MYSQL_USER: aluno
+      MYSQL_PASSWORD: aluno123
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-scripts/mysql:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password --innodb-use-native-aio=0 --sql_mode="" --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:13-alpine
+    container_name: aula_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: aula_go
+      POSTGRES_USER: aluno
+      POSTGRES_PASSWORD: aluno123
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts/postgres:/docker-entrypoint-initdb.d
+    shm_size: 256mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aluno -d aula_go"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Adminer - Interface Web para administração
+  adminer:
+    image: adminer:4.8.1
+    container_name: aula_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - postgres
+
+volumes:
+  mysql_data:
+  postgres_data:
