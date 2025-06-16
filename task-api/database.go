@@ -59,6 +59,7 @@ func connectDB() (*sql.DB, error) {
 	return database, nil
 }
 
+// Função que cria a tabela de tasks no banco
 func createTable() error {
 	query := ` 
 	CREATE TABLE IF NOT EXISTS tasks ( 
@@ -76,6 +77,7 @@ func createTable() error {
 	return nil
 }
 
+// Seeder - Insere informações iniciais no banco vazio
 func insertInitialData() error {
 	var count int
 
@@ -107,6 +109,7 @@ func insertInitialData() error {
 	return nil
 }
 
+// Consulta todos os dados na base de dados.
 func getAllTasksFromDB() ([]Task, error) {
 	query := "SELECT id, name, done FROM tasks ORDER BY id"
 	rows, err := db.Query(query)
@@ -129,8 +132,65 @@ func getAllTasksFromDB() ([]Task, error) {
 	return tasks, nil
 }
 
+// Cria elementos no banco de dados.
 func createTaskInDB(task *Task) error {
 	query := "INSERT INTO tasks (name, done) VALUES ($1, $2) RETURNING id"
 	err := db.QueryRow(query, task.Name, task.Done).Scan(&task.ID)
 	return err
+}
+
+func getTaskByIDFromDB(id int) (*Task, error) {
+	var task Task
+	query := "SELECT id, name, done FROM tasks WHERE id = $1"
+
+	err := db.QueryRow(query, id).Scan(&task.ID, &task.Name, &task.Done)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &task, nil
+}
+
+// Altera valores no banco de dados.
+func updateTaskInDB(task *Task) error {
+	query := "UPDATE tasks SET name = $1, done = $2 WHERE id = $3"
+	result, err := db.Exec(query, task.Name, task.Done, task.ID)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
+}
+
+func deleteTaskFromDB(id int) error {
+	query := "DELETE FROM tasks WHERE id = $1"
+	result, err := db.Exec(query, id)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return sql.ErrNoRows // Nenhuma linha foi afetada
+	}
+	return nil
 }
