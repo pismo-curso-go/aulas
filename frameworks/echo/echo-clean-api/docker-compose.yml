@@ -32,5 +32,21 @@ services:
     depends_on:
       - postgres
 
+  api:
+    image: echo-clean-api-aula
+    container_name: echo-clean-api-aula
+    restart: always
+    ports: 
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: echo_clean_db
+      JWT_SECRET: segredo-super-seguro
+
 volumes:
   postgres_data:
